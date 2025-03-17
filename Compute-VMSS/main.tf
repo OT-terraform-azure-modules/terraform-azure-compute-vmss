@@ -42,12 +42,24 @@ resource "azurerm_linux_virtual_machine_scale_set" "modular_vmss" {
     }
   }
 
-  source_image_reference {
-    publisher = each.value.image.publisher
-    offer     = each.value.image.offer
-    sku       = each.value.image.sku
-    version   = each.value.image.version
+  dynamic "source_image_reference" {
+    for_each = each.value.image_id == null ? [1] : []
+    content {
+      publisher = each.value.image.publisher
+      offer     = each.value.image.offer
+      sku       = each.value.image.sku
+      version   = each.value.image.version
+    }
   }
+
+  //source_image_reference {
+  //  publisher = each.value.image_id != null ? each.value.image.publisher : null
+  //  offer     = each.value.image_id != null ? each.value.image.offer: null
+  //  sku       = each.value.image_id != null ? each.value.image.sku: null
+  //  version   = each.value.image_id != null ? each.value.image.version: null
+  //}
+
+  source_image_id = each.value.image_id != null ? each.value.image_id : null
 
   os_disk {
     caching              = "ReadWrite"

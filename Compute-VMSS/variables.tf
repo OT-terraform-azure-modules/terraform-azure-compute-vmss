@@ -38,6 +38,7 @@ variable "virtual_machine_scale_sets" {
       sku       = string
       version   = string
     })
+    image_id = string
   }))
 }
 
